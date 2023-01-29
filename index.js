@@ -43,7 +43,7 @@ program
     // Withraw from Account
 
     if (kind === "WITHDRAW") {
-      holderName = Number(holderName);
+      holderName = parseInt(holderName);
 
       let current = mainData.accountDetails
         .filter((e) => {
@@ -57,7 +57,10 @@ program
             !Number.isNaN(holderName) &&
             e.accountBalance >= holderName
           ) {
-            return { ...e, accountBalance: Number(e.accountBalance) - holderName };
+            return {
+              ...e,
+              accountBalance: parseInt(e.accountBalance) - holderName,
+            };
           } else {
             console.log("Insufficent Balance!");
             return e;
@@ -86,7 +89,7 @@ program
     // Deposit in Account
 
     if (kind === "DEPOSIT") {
-      holderName = Number(holderName);
+      holderName = parseInt(holderName);
       let current = mainData.accountDetails
         .filter((e) => {
           if (e.accountNumber === accountNo) {
@@ -95,7 +98,10 @@ program
         })
         .map((e) => {
           if (!Number.isNaN(holderName) && holderName > 0) {
-            return { ...e, accountBalance: Number(e.accountBalance) + holderName };
+            return {
+              ...e,
+              accountBalance: parseInt(e.accountBalance) + holderName,
+            };
           } else {
             console.log("The Amount you enter is Wrong!");
             return e;

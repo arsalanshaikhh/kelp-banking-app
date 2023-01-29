@@ -5,6 +5,12 @@
       "name": "KELP",
       "accountBalance": 9000,
       "id": 1
+    },
+    {
+      "accountNumber": "ACC002",
+      "name": "FVTPL",
+      "accountBalance": 8000,
+      "id": 2
     }
   ]
 }
