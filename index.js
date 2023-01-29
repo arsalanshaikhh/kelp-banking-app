@@ -30,7 +30,7 @@ program
         }
       });
       if (current.length > 0) {
-        console.log("Account number already Exist");
+        console.log("Account Number already Exist");
         return;
       }
       mainData.accountDetails.push(object);
