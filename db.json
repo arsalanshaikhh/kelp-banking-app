@@ -1,3 +1,10 @@
 {
-  "accountDetails": []
+  "accountDetails": [
+    {
+      "accountNumber": "ACC001",
+      "name": "KELP",
+      "accountBalance": 9000,
+      "id": 1
+    }
+  ]
 }
