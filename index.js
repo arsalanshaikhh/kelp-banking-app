@@ -1,130 +1,132 @@
 const { Command } = require("commander");
-
 const program = new Command();
 const fs = require("fs");
 
+// ***********************************************************
+// commander
+
 program
-  .argument("<type>", "user login details")
-  .argument("[accctno]", "Account Number")
+  .argument("<kind>", "user login details")
+  .argument("[accountNo]", "Account Number")
   .argument("[name]", "Amount/Name of Bank Account Holder")
-  .action(function (type, acctno, optional) {
+  .action(function (kind, accountNo, holderName) {
     let data = fs.readFileSync("./db.json", { encoding: "utf-8" });
-    let parseddata = JSON.parse(data);
+    let mainData = JSON.parse(data);
 
     // ***********************************************************
+    // Create Account
 
-    if (type === "CREATE") {
-      let info = {
-        account_no: acctno,
-        name: optional,
-        balance: 0,
-        id: parseddata.accountDetails.length + 1,
+    if (kind === "CREATE") {
+      let object = {
+        accountNumber: accountNo,
+        name: holderName,
+        accountBalance: 0,
+        id: mainData.accountDetails.length + 1,
       };
 
-      let present = parseddata.accountDetails.filter((e) => {
-        if (e.account_no === acctno || e.name === optional) {
+      let current = mainData.accountDetails.filter((e) => {
+        if (e.accountNumber === accountNo || e.name === holderName) {
           return e;
         }
       });
-      if (present.length > 0) {
-        console.log(
-          "Account number already in database enter another account number and name"
-        );
+      if (current.length > 0) {
+        console.log("Account number already Exist");
         return;
       }
-      parseddata.accountDetails.push(info);
-      let newdata = JSON.stringify(parseddata);
-      fs.writeFileSync("./db.json", newdata, { encoding: "utf-8" });
+      mainData.accountDetails.push(object);
+      let newwData = JSON.stringify(mainData);
+      fs.writeFileSync("./db.json", newwData, { encoding: "utf-8" });
       return;
     }
 
     // ***********************************************************
+    // Withraw from Account
 
-    if (type === "WITHDRAW") {
-      optional = Number(optional);
+    if (kind === "WITHDRAW") {
+      holderName = Number(holderName);
 
-      let present = parseddata.accountDetails
+      let current = mainData.accountDetails
         .filter((e) => {
-          if (e.account_no === acctno) {
+          if (e.accountNumber === accountNo) {
             return e;
           }
         })
         .map((e) => {
           if (
-            e.balance > 0 &&
-            !Number.isNaN(optional) &&
-            e.balance >= optional
+            e.accountBalance > 0 &&
+            !Number.isNaN(holderName) &&
+            e.accountBalance >= holderName
           ) {
-            return { ...e, balance: Number(e.balance) - optional };
+            return { ...e, accountBalance: Number(e.accountBalance) - holderName };
           } else {
-            console.log("Insufficent balance/Something went Wrong!");
+            console.log("Insufficent Balance!");
             return e;
           }
         });
 
-      if (present.length === 0) {
-        console.log("Account NO Does Not Exist!");
+      if (current.length === 0) {
+        console.log("There is No Such Account!");
         return;
       } else {
-        let updatedata = parseddata.accountDetails.map((e) => {
-          if (e.id === present[0].id) {
-            return (e = present[0]);
+        let updatedData = mainData.accountDetails.map((e) => {
+          if (e.id === current[0].id) {
+            return (e = current[0]);
           } else {
             return e;
           }
         });
-        parseddata.accountDetails = updatedata;
-        let newdata = JSON.stringify(parseddata);
-        fs.writeFileSync("./db.json", newdata, { encoding: "utf-8" });
+        mainData.accountDetails = updatedData;
+        let newwData = JSON.stringify(mainData);
+        fs.writeFileSync("./db.json", newwData, { encoding: "utf-8" });
       }
       return;
     }
 
     // ***********************************************************
+    // Deposit in Account
 
-    if (type === "DEPOSIT") {
-      optional = Number(optional);
-      let present = parseddata.accountDetails
+    if (kind === "DEPOSIT") {
+      holderName = Number(holderName);
+      let current = mainData.accountDetails
         .filter((e) => {
-          if (e.account_no === acctno) {
+          if (e.accountNumber === accountNo) {
             return e;
           }
         })
         .map((e) => {
-          if (!Number.isNaN(optional) && optional > 0) {
-            return { ...e, balance: Number(e.balance) + optional };
+          if (!Number.isNaN(holderName) && holderName > 0) {
+            return { ...e, accountBalance: Number(e.accountBalance) + holderName };
           } else {
-            console.log(
-              "The Amount you enter is not proper format plz check!/Not an Number"
-            );
+            console.log("The Amount you enter is Wrong!");
             return e;
           }
         });
 
-      if (present.length === 0) {
+      if (current.length === 0) {
         console.log("Account No Does Not Exist");
         return;
       } else {
-        let updatedata = parseddata.accountDetails.map((e) => {
-          if (e.id === present[0].id) {
-            return (e = present[0]);
+        let updatedData = mainData.accountDetails.map((e) => {
+          if (e.id === current[0].id) {
+            return (e = current[0]);
           } else {
             return e;
           }
         });
-        parseddata.accountDetails = updatedata;
-        let newdata = JSON.stringify(parseddata);
-        fs.writeFileSync("./db.json", newdata, { encoding: "utf-8" });
+        mainData.accountDetails = updatedData;
+        let newwData = JSON.stringify(mainData);
+        fs.writeFileSync("./db.json", newwData, { encoding: "utf-8" });
       }
       return;
     }
 
     // ***********************************************************
+    // Account Balance
 
-    if (type === "BALANCE") {
-      parseddata.filter((e) => {
-        if (e.account_no === acctno) {
-          console.log(e.name + " " + e.balance);
+    if (kind === "BALANCE") {
+      mainData.accountDetails.filter((e) => {
+        if (e.accountNumber === accountNo) {
+          console.log(e.name + " " + e.accountBalance);
         }
       });
       return;
